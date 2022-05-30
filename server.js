@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 require("dotenv").config();
 
@@ -42,6 +44,44 @@ app.post("/api/new-post", (req, res) => {
     }
   });
 });
+
+app.post("/api/register", (req, res) => {
+  const userData = req.body.userData;
+  const hashedPassword = bcrypt.hashSync(userData.password, saltRounds);
+
+  const addUser = `INSERT INTO space_users VALUES (null, '${userData.username}', '${hashedPassword}', '${userData.email}')`;
+
+  db.query(addUser, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/api/login', (req, res) => {
+  const userData = req.body.userData;
+
+  const getUser = `SELECT * FROM space_users WHERE email = '${userData.email}'`
+
+  db.query(getUser, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      
+      if (result.length > 0) {
+        console.log(result);
+        const isPasswordMatch = bcrypt.compareSync(userData.password, result[0].password);
+        result.push(isPasswordMatch);
+        
+        if (isPasswordMatch) {
+          res.send(result);
+        }
+      }
+    }
+  })
+})
 
 app.listen(5000, () => {
   console.log("running");
