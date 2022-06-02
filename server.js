@@ -70,7 +70,6 @@ app.post("/api/login", (req, res) => {
       console.log(err);
     } else {
       if (result.length > 0) {
-        console.log(result);
         const isPasswordMatch = bcrypt.compareSync(
           userData.password,
           result[0].password
@@ -99,6 +98,20 @@ app.post("/api/search", (req, res) => {
       }
     });
   }
+});
+
+app.post("/api/get-user", (req, res) => {
+  const userData = req.body.userData;
+
+  const getUser = `SELECT id, username, email FROM space_users WHERE id = ${userData}`;
+
+  db.query(getUser, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 app.listen(5000, () => {
