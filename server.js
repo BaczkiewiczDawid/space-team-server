@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/posts", (req, res) => {
-  const getPosts = "SELECT * FROM space_posts ORDER BY id DESC";
+  const getPosts = "SELECT username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author";
 
   db.query(getPosts, (err, result) => {
     if (err) {
@@ -34,7 +34,7 @@ app.get("/api/posts", (req, res) => {
 app.post("/api/new-post", (req, res) => {
   const newPost = req.body.newPost;
 
-  const addNewPost = `INSERT INTO space_posts VALUES(null, '${newPost.author}', '${newPost.description}', '${newPost.img}')`;
+  const addNewPost = `INSERT INTO space_posts VALUES(null, ${newPost.author}, '${newPost.description}', '${newPost.img}')`;
 
   db.query(addNewPost, (err, result) => {
     if (err) {
@@ -106,6 +106,20 @@ app.post("/api/get-user", (req, res) => {
   const getUser = `SELECT id, username, email FROM space_users WHERE id = ${userData}`;
 
   db.query(getUser, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/api/user-posts", (req, res) => {
+  const userData = req.body.userData;
+
+  const getUserPosts = `SELECT * FROM space_posts WHERE author = '${userData}'`;
+
+  db.query(getUserPosts, (err, result) => {
     if (err) {
       console.log(err);
     } else {
