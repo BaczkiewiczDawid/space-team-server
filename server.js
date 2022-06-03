@@ -114,6 +114,20 @@ app.post("/api/get-user", (req, res) => {
   });
 });
 
+app.post("/api/user-posts", (req, res) => {
+  const userData = req.body.userData;
+
+  const getUserPosts = `SELECT * FROM space_posts WHERE author = '${userData}'`;
+
+  db.query(getUserPosts, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log("running");
 });
