@@ -103,7 +103,7 @@ app.post("/api/search", (req, res) => {
 app.post("/api/get-user", (req, res) => {
   const userData = req.body.userData;
 
-  const getUser = `SELECT id, username, email FROM space_users WHERE id = ${userData}`;
+  const getUser = `SELECT id, username, email, picture FROM space_users WHERE id = ${userData}`;
 
   db.query(getUser, (err, result) => {
     if (err) {
