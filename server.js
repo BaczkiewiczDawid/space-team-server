@@ -103,7 +103,7 @@ app.post("/api/search", (req, res) => {
 app.post("/api/get-user", (req, res) => {
   const userData = req.body.userData;
 
-  const getUser = `SELECT id, username, email, picture FROM space_users WHERE id = ${userData}`;
+  const getUser = `SELECT id, username, email, picture, job, phone, country, city FROM space_users WHERE id = ${userData}`;
 
   db.query(getUser, (err, result) => {
     if (err) {
@@ -127,6 +127,20 @@ app.post("/api/user-posts", (req, res) => {
     }
   });
 });
+
+app.post('/api/set-data', (req, res) => {
+  const userData = req.body.userData;
+
+  const updateUserData = `UPDATE space_users SET job = '${userData.job}', phone = '${userData.phone}', country = '${userData.country}', city='${userData.city}' WHERE id = '${userData.id}'`;
+
+  db.query(updateUserData, (err, result) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.send(result);
+    }
+  })
+})
 
 app.listen(5000, () => {
   console.log("running");
