@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/posts", (req, res) => {
   const getPosts =
-    "SELECT username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author";
+    "SELECT space_posts.id, username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author ORDER BY space_posts.id DESC";
 
   db.query(getPosts, (err, result) => {
     if (err) {
@@ -118,7 +118,7 @@ app.post("/api/get-user", (req, res) => {
 app.post("/api/user-posts", (req, res) => {
   const userData = req.body.userData;
 
-  const getUserPosts = `SELECT * FROM space_posts WHERE author = '${userData}'`;
+  const getUserPosts = `SELECT space_posts.id, space_users.id, picture, username, description, img FROM space_posts, space_users WHERE space_posts.author = space_users.id AND author = '${userData}' ORDER BY  space_posts.id DESC`;
 
   db.query(getUserPosts, (err, result) => {
     if (err) {
