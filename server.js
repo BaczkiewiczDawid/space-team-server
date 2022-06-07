@@ -20,7 +20,8 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/posts", (req, res) => {
-  const getPosts = "SELECT username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author";
+  const getPosts =
+    "SELECT username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author";
 
   db.query(getPosts, (err, result) => {
     if (err) {
@@ -49,7 +50,7 @@ app.post("/api/register", (req, res) => {
   const userData = req.body.userData;
   const hashedPassword = bcrypt.hashSync(userData.password, saltRounds);
 
-  const addUser = `INSERT INTO space_users VALUES (null, '${userData.username}', '${hashedPassword}', '${userData.email}')`;
+  const addUser = `INSERT INTO space_users VALUES (null, '${userData.username}', '${hashedPassword}', '${userData.email}', 'https://images.unsplash.com/photo-1517849845537-4d257902454a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80', null, null, null, null)`;
 
   db.query(addUser, (err, result) => {
     if (err) {
@@ -128,19 +129,34 @@ app.post("/api/user-posts", (req, res) => {
   });
 });
 
-app.post('/api/set-data', (req, res) => {
+app.post("/api/set-data", (req, res) => {
   const userData = req.body.userData;
 
   const updateUserData = `UPDATE space_users SET job = '${userData.job}', phone = '${userData.phone}', country = '${userData.country}', city='${userData.city}' WHERE id = '${userData.id}'`;
 
   db.query(updateUserData, (err, result) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
       res.send(result);
     }
-  })
-})
+  });
+});
+
+app.post("/api/friends-list", (req, res) => {
+  const userData = req.body.userData;
+
+  const getFriendsList = `SELECT DISTINCT space_users.id, space_users.picture, space_users.username, space_friends_list.username FROM space_friends_list, space_users WHERE space_users.id = space_friends_list.userid AND space_users.id = '${userData}'`;
+
+  db.query(getFriendsList, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+    console.log(getFriendsList)
+  });
+});
 
 app.listen(5000, () => {
   console.log("running");
