@@ -146,7 +146,7 @@ app.post("/api/set-data", (req, res) => {
 app.post("/api/friends-list", (req, res) => {
   const userData = req.body.userData;
 
-  const getFriendsList = `SELECT DISTINCT space_users.id, space_users.picture, space_users.username, space_friends_list.username FROM space_friends_list, space_users WHERE space_users.id = space_friends_list.userid AND space_users.id = '${userData}'`;
+  const getFriendsList = `SELECT DISTINCT space_users.id, space_users.picture, space_users.username, space_friends_list.username, space_friends_list.friendid FROM space_friends_list, space_users WHERE space_users.id = space_friends_list.userid AND space_users.id = '${userData}'`;
 
   db.query(getFriendsList, (err, result) => {
     if (err) {
