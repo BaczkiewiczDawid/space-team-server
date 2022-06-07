@@ -154,7 +154,20 @@ app.post("/api/friends-list", (req, res) => {
     } else {
       res.send(result);
     }
-    console.log(getFriendsList)
+  });
+});
+
+app.post("/api/delete-friend", (req, res) => {
+  const userData = req.body.userData;
+
+  const removeFriend = `DELETE FROM space_friends_list WHERE friendid = ${userData}`;
+
+  db.query(removeFriend, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
   });
 });
 
