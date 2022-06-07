@@ -146,7 +146,7 @@ app.post("/api/set-data", (req, res) => {
 app.post("/api/friends-list", (req, res) => {
   const userData = req.body.userData;
 
-  const getFriendsList = `SELECT DISTINCT space_users.id, space_users.picture, space_users.username, space_friends_list.username, space_friends_list.friendid FROM space_friends_list, space_users WHERE space_users.id = space_friends_list.userid AND space_users.id = '${userData}'`;
+  const getFriendsList = `SELECT DISTINCT space_users.id, space_users.picture, space_users.username, space_users.id  FROM space_friends_list, space_users WHERE space_users.id = space_friends_list.friendid AND space_friends_list.userid = ${userData}`;
 
   db.query(getFriendsList, (err, result) => {
     if (err) {
@@ -154,7 +154,35 @@ app.post("/api/friends-list", (req, res) => {
     } else {
       res.send(result);
     }
-    console.log(getFriendsList)
+  });
+});
+
+app.post("/api/delete-friend", (req, res) => {
+  const userData = req.body.userData;
+
+  const removeFriend = `DELETE FROM space_friends_list WHERE friendid = ${userData}`;
+
+  db.query(removeFriend, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/api/add-friend", (req, res) => {
+  const userData = req.body.userData;
+
+  const addFriend = `INSERT INTO space_friends_list VALUES (${userData.userID}, '${userData.username}', ${userData.friendID}, null)`;
+
+  db.query(addFriend, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+    console.log(addFriend);
   });
 });
 
