@@ -182,7 +182,31 @@ app.post("/api/add-friend", (req, res) => {
     } else {
       res.send(result);
     }
-    console.log(addFriend);
+  });
+});
+app.post("/api/new-message", (req, res) => {
+  const userData = req.body.userData;
+
+  const newMessage = `INSERT INTO space_messages VALUES(null, '${userData.inputValue}', ${userData.userID})`;
+
+  db.query(newMessage, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/api/load-messages", (req, res) => {
+  const loadMessages = `SELECT space_messages.id, message, picture, username, space_users.id as userid FROM space_messages, space_users WHERE space_messages.author = space_users.id ORDER BY id ASC`;
+
+  db.query(loadMessages, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
   });
 });
 
