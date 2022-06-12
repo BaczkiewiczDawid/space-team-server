@@ -210,6 +210,20 @@ app.get("/api/load-messages", (req, res) => {
   });
 });
 
+app.post("/api/change-picture", (req, res) => {
+  const userData = req.body.userData;
+
+  const changePicture = `UPDATE space_users SET picture = '${userData.picture}' WHERE id = ${userData.user}`;
+
+  db.query(changePicture, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log("running");
 });
