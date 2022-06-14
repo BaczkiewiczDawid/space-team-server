@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/posts", (req, res) => {
   const getPosts =
-    "SELECT space_posts.id, username, description, img, space_users.id, picture FROM space_users, space_posts WHERE space_users.id = space_posts.author ORDER BY space_posts.id DESC";
+    "SELECT username, description, img, space_users.id, picture, space_posts.id as postID FROM space_users, space_posts WHERE space_users.id = space_posts.author ORDER BY space_posts.id DESC";
 
   db.query(getPosts, (err, result) => {
     if (err) {
@@ -202,6 +202,78 @@ app.get("/api/load-messages", (req, res) => {
   const loadMessages = `SELECT space_messages.id, message, picture, username, space_users.id as userid FROM space_messages, space_users WHERE space_messages.author = space_users.id ORDER BY id ASC`;
 
   db.query(loadMessages, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/api/change-picture", (req, res) => {
+  const userData = req.body.userData;
+
+  const changePicture = `UPDATE space_users SET picture = '${userData.picture}' WHERE id = ${userData.user}`;
+
+  db.query(changePicture, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/api/add-like", (req, res) => {
+  const userData = req.body.userData;
+
+  const like = `INSERT INTO space_posts_likes VALUES(null, ${userData.postID}, ${userData.userID})`;
+
+  db.query(like, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+    console.log(like);
+  });
+});
+
+app.post("/api/delete-like", (req, res) => {
+  const userData = req.body.userData;
+
+  const like = `DELETE FROM space_posts_likes WHERE postID = ${userData.postID} AND userID = ${userData.userID}`;
+
+  db.query(like, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+    console.log(like);
+  });
+});
+
+app.post("/api/likes-list", (req, res) => {
+  const userData = req.body.userData;
+
+  const isLiked = `SELECT * FROM space_posts_likes WHERE userID = ${userData.userID} AND postID = ${userData.postID}`;
+
+  db.query(isLiked, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/api/count-likes", (req, res) => {
+  const userData = req.body.userData;
+
+  const countLikes = `SELECT COUNT(postID) as count FROM space_posts_likes WHERE postID = ${userData.postID}`;
+
+  db.query(countLikes, (err, result) => {
     if (err) {
       console.log(err);
     } else {
