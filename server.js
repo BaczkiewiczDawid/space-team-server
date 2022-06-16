@@ -282,6 +282,6 @@ app.post("/api/count-likes", (req, res) => {
   });
 });
 
-app.listen(5000, () => {
-  console.log("running");
-});
+const port = process.env.PORT || 3000;
+
+app.listen(port)
