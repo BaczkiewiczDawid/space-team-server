@@ -80,6 +80,8 @@ app.post("/api/login", (req, res) => {
         if (isPasswordMatch) {
           res.send(result);
         }
+      } else {
+        res.send(result);
       }
     }
   });
