@@ -50,7 +50,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/static', express.static(path.join(__dirname, 'client/build')));
 
-app.get("/api/posts", (req, res) => {
+app.get("/posts", (req, res) => {
   const getPosts =
     "SELECT username, description, img, space_users.id, picture, space_posts.id as postID FROM space_users, space_posts WHERE space_users.id = space_posts.author ORDER BY space_posts.id DESC";
 
@@ -63,7 +63,7 @@ app.get("/api/posts", (req, res) => {
   });
 });
 
-app.post("/api/new-post", (req, res) => {
+app.post("/new-post", (req, res) => {
   const newPost = req.body.newPost;
 
   const addNewPost = `INSERT INTO space_posts VALUES(null, ${newPost.author}, '${newPost.description}', '${newPost.img}')`;
